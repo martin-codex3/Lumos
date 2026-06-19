@@ -8,4 +8,5 @@ dependencies = [
     "fastapi[standard]>=0.137.2",
     "psycopg[binary]>=3.3.4",
     "pydantic-settings>=2.14.1",
+    "sqlmodel>=0.0.38",
 ]

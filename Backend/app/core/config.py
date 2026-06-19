@@ -6,6 +6,7 @@ class Config(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=True,
+        extra = "ignore"
     )
 
-Config = Config()
+Config = Config() # type: ignore
