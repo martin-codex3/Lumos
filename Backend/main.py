@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.api.authentication_routes import authentication_router
-from app.core.database import init_database
+from app.core.database import init_database, close_database_connect
 
 api_version = "v1"
 
@@ -9,10 +9,14 @@ api_version = "v1"
 @asynccontextmanager
 async def app_lifespan():
     try:
-        init_database()
+        await init_database()
+        yield
+        print("Server stopped")
     finally:
         # we will close the database connection here
         print("Database connection lost")
+        await close_database_connect()
+
 
 
 app = FastAPI(

@@ -1,6 +1,7 @@
 from sqlmodel import create_engine
 from sqlalchemy.ext.asyncio import AsyncEngine
 from app.core.config import Config
+from sqlmodel import SQLModel
 
 # we will create the database engine here 
 database_engine = AsyncEngine(
@@ -14,7 +15,7 @@ database_engine = AsyncEngine(
 # we will use this to create a database session later 
 async def init_database():
     async with database_engine.begin() as connection:
-        yield connection
+        await connection.run_sync(SQLModel.metadata.create_all)
 
 async def close_database_connect():
     async with database_engine.begin() as connection:
