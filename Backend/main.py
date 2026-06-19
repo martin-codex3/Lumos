@@ -1,7 +1,16 @@
 from fastapi import FastAPI
+from app.api.authentication_routes import authentication_router
 
-app = FastAPI()
 
-@app.get("/")
-async def hello():
-    return {"message": "Hello this is the test for the api"}
+api_version = "v1"
+
+app = FastAPI(
+    title = "Ai Powered document analyzer",
+    version = api_version
+)
+
+app.include_router(
+    router = authentication_router,
+    tags = ["Authentication"],
+    prefix = "/api/authentication"
+)
