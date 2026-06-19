@@ -12,3 +12,10 @@ database_engine = AsyncEngine(
 
 # this function will attempt to connect to the database here
 # we will use this to create a database session later 
+async def init_database():
+    async with database_engine.begin() as connection:
+        yield connection
+
+async def close_database_connect():
+    async with database_engine.begin() as connection:
+        connection.close
