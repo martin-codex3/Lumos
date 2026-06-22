@@ -27,5 +27,5 @@ async def close_database_connect():
 # we will create the database session here 
 # this will be used for the dependency injection
 async def get_database_session():
-    with Session(bind=AsyncSession) as session:
+    with Session(bind=database_engine) as session:
         yield session
