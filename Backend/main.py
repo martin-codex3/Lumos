@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from app.api.authentication_routes import authentication_router
+from app.api.authentication.authentication_routes import authentication_router
 from app.core.database import init_database, close_database_connect
 
 api_version = "v1"

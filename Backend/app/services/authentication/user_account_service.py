@@ -3,6 +3,8 @@ from app.models.user import User
 from sqlmodel import select
 from pydantic import EmailStr
 from app.schemas.authentication.user_schema import USerCreateSchema
+from app.utils.password_hasher import hash_user_password
+
 
 class UserAccountService:
     """we will have all the user account creation here"""
@@ -30,6 +32,9 @@ class UserAccountService:
         user_data_dict = user_data.model_dump()
 
         new_user = User(**user_data_dict)
-
+        
+        # we will attempt to hash the password here 
+        new_user.password = hash_user_password(new_user.password)
         session.add(new_user)
         await session.commit()
+        return new_user
