@@ -7,7 +7,7 @@ api_version = "v1"
 
 # using a context manager to create a lifespan
 @asynccontextmanager
-async def app_lifespan():
+async def app_lifespan(app: FastAPI):
     try:
         await init_database()
         yield
