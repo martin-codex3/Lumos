@@ -10,7 +10,7 @@ authentication_router = APIRouter()
 # we will get the services here 
 authentication_services = UserAccountService()
 
-@authentication_router.get("/create-account", status_code = status.HTTP_200_OK, response_model = CreateUserResponse)
+@authentication_router.post("/create-account", status_code = status.HTTP_200_OK, response_model = CreateUserResponse)
 async def index(user_data: USerCreateSchema, session: AsyncSession = Depends(get_database_session)):
     # we have to check if the user exists 
     email: EmailStr = user_data.email
@@ -21,7 +21,7 @@ async def index(user_data: USerCreateSchema, session: AsyncSession = Depends(get
     )
 
     if user_exists:
-        return HTTPException(
+        raise HTTPException(
             status_code = status.HTTP_400_BAD_REQUEST,
             detail = "User with that email already exists"
         )
