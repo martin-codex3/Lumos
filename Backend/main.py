@@ -36,7 +36,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 # we will customise the errors here 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    all_errors = [
+    all_errors = [ # type: ignore
         {
             "field": " -> ".join(str(loc) for loc in error["loc"]),
             "message": error["msg"],
