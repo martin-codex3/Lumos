@@ -58,7 +58,6 @@ def validate_password(value: str) -> str:
     return value
 
 
-
 class SignInSchema(BaseModel):
 
     email: EmailStr 
