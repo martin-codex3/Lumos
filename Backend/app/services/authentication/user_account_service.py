@@ -2,7 +2,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models.user import User
 from sqlmodel import select
 from pydantic import EmailStr
-from app.schemas.authentication.user_schema import USerCreateSchema
+from app.schemas.authentication.user_schema import UserCreateSchema
 from app.utils.password_hasher import hash_user_password
 
 
@@ -28,7 +28,7 @@ class UserAccountService:
             return False
     
     # we will attempt to create the user account here 
-    async def create_user_account(self, user_data: USerCreateSchema, session: AsyncSession):
+    async def create_user_account(self, user_data: UserCreateSchema, session: AsyncSession):
         user_data_dict = user_data.model_dump()
 
         new_user = User(**user_data_dict)

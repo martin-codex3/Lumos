@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Depends, HTTPException
 from app.services.authentication.user_account_service import UserAccountService
-from app.schemas.authentication.user_schema import USerCreateSchema
+from app.schemas.authentication.user_schema import UserCreateSchema
 from app.schemas.authentication.sign_in_schema import SignInSchema
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.mappings.authentication.create_user_response import CreateUserResponse
@@ -13,7 +13,7 @@ authentication_router = APIRouter()
 authentication_services = UserAccountService()
 
 @authentication_router.post("/create-account", status_code = status.HTTP_200_OK, response_model = CreateUserResponse)
-async def index(user_data: USerCreateSchema, session: AsyncSession = Depends(get_database_session)):
+async def index(user_data: UserCreateSchema, session: AsyncSession = Depends(get_database_session)):
     # we have to check if the user exists 
     email: EmailStr = user_data.email
 
