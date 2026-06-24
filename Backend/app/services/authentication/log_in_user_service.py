@@ -6,6 +6,8 @@ from app.utils.password_hasher import verify_hashed_password
 from app.utils.jwt_token import create_jwt_token
 from datetime import timedelta
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import HTTPException
+from fastapi import status
 
 user_account_service = UserAccountService()
 
@@ -49,3 +51,20 @@ class LoginUserService:
                     exp = timedelta(days=7),
                     refresh = True,
                 )
+
+                return JSONResponse(
+                    content = {
+                        "access_token": access_token,
+                        "refresh_token": refresh_token
+                    }
+                )
+        raise HTTPException(
+            status_code = status.HTTP_403_FORBIDDEN,
+            detail = "Email or password is incorrect!"
+        )
+        
+
+            
+        
+           
+

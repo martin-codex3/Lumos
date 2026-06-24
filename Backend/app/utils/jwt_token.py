@@ -9,7 +9,7 @@ def create_jwt_token(user_data: dict, exp: timedelta = None, refresh: bool = Fal
         "user": user_data, 
         "exp": datetime.now() + (exp if exp is not None else timedelta(minutes=60)),
         "refresh": refresh,
-        "jti": uuid.uuid4()
+        "jti": str(uuid.uuid4())
     }
 
     # we will create the token here 

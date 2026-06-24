@@ -40,9 +40,12 @@ async def index(user_data: UserCreateSchema, session: AsyncSession = Depends(get
 
 @authentication_router.post("/sign-in", status_code=status.HTTP_200_OK)
 async def sign_in(user_data: SignInSchema, session: AsyncSession = Depends(get_database_session)):
-    await login_user_service.login_in_user(
+
+    user_login = await login_user_service.login_in_user(
         session = session,
         user_data = user_data
     )
+
+    return user_login
 
     
