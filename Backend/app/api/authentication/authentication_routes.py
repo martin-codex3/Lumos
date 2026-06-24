@@ -1,10 +1,12 @@
 from fastapi import APIRouter, status, Depends, HTTPException
 from app.services.authentication.user_account_service import UserAccountService
 from app.schemas.authentication.user_schema import USerCreateSchema
+from app.schemas.authentication.sign_in_schema import SignInSchema
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.mappings.authentication.create_user_response import CreateUserResponse
 from pydantic import EmailStr
 from app.core.database import get_database_session
+
 
 authentication_router = APIRouter()
 # we will get the services here 
@@ -32,3 +34,8 @@ async def index(user_data: USerCreateSchema, session: AsyncSession = Depends(get
             session = session
         )
         return new_user
+
+
+@authentication_router.post("/sign-in", status_code=status.HTTP_200_OK)
+async def sign_in(user_data: SignInSchema, session: AsyncSession = Depends(get_database_session)):
+    print(user_data)
