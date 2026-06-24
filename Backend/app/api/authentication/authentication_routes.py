@@ -6,11 +6,13 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.mappings.authentication.create_user_response import CreateUserResponse
 from pydantic import EmailStr
 from app.core.database import get_database_session
+from app.services.authentication.log_in_user_service import LoginUserService
 
 
 authentication_router = APIRouter()
 # we will get the services here 
 authentication_services = UserAccountService()
+login_user_service = LoginUserService()
 
 @authentication_router.post("/create-account", status_code = status.HTTP_200_OK, response_model = CreateUserResponse)
 async def index(user_data: UserCreateSchema, session: AsyncSession = Depends(get_database_session)):
@@ -38,4 +40,9 @@ async def index(user_data: UserCreateSchema, session: AsyncSession = Depends(get
 
 @authentication_router.post("/sign-in", status_code=status.HTTP_200_OK)
 async def sign_in(user_data: SignInSchema, session: AsyncSession = Depends(get_database_session)):
-    print(user_data)
+    await login_user_service.login_in_user(
+        session = session,
+        user_data = user_data
+    )
+
+    

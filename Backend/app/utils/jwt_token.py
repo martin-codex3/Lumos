@@ -1,13 +1,13 @@
 import jwt
-from datetime import timedelta, datetime, timezone
+from datetime import timedelta, datetime
 import uuid
 from app.core.config import Config
 import logging
 
-async def create_jwt_token(user_data: dict, refresh: bool = False) -> str: # type: ignore
+def create_jwt_token(user_data: dict, exp: timedelta = None, refresh: bool = False) -> str: # type: ignore
     payload = { # type: ignore
         "user": user_data, 
-        "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=60),
+        "exp": datetime.now() + (exp if exp is not None else timedelta(minutes=60)),
         "refresh": refresh,
         "jti": uuid.uuid4()
     }
@@ -17,7 +17,7 @@ async def create_jwt_token(user_data: dict, refresh: bool = False) -> str: # typ
     return jwt_token
 
 # we will decode the token here 
-async def decode_jwt_token(token: str):
+def decode_jwt_token(token: str):
 
     try:
         decoded_token = jwt.decode(

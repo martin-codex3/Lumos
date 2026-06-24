@@ -1,32 +1,51 @@
-from schemas.authentication.sign_in_schema import SignInSchema
+from app.schemas.authentication.sign_in_schema import SignInSchema
 from sqlmodel.ext.asyncio.session import AsyncSession
-from services.authentication.user_account_service import UserAccountService
+from app.services.authentication.user_account_service import UserAccountService
 from pydantic import EmailStr
-from utils.password_hasher import verify_hashed_password
-
+from app.utils.password_hasher import verify_hashed_password
+from app.utils.jwt_token import create_jwt_token
+from datetime import timedelta
+from fastapi.responses import JSONResponse
 
 user_account_service = UserAccountService()
 
 class LoginUserService:
 
-    def __init__(self, session: AsyncSession, user_data: SignInSchema) -> None:
-        self.session = session
-        self.user_data = user_data
-
-    async def login_in_user(self):
+    async def login_in_user(self, session: AsyncSession, user_data: SignInSchema):
         # we have to get the user by the email first
-        email: EmailStr = self.user_data.email
-        user_password: str = self.user_data.password
+        email: EmailStr = user_data.email
+        user_password: str = user_data.password
 
         user = await user_account_service.get_user_by_email(
             email = email,
-            session = self.session
+            session = session
         )
 
         if user is not None:
             # we will attempt to get the user password
             verified_password = verify_hashed_password(
                 user_password = user_password,
-                hashed_password = user["password"]
+                hashed_password = user.password
             )
-            print(verified_password)
+            
+            if verified_password:
+                # we will create the access and refresh tokens here 
+                access_token = create_jwt_token(
+                    user_data = {
+                        "first_name": user.first_name,
+                        "last_name": user.last_name,
+                        "email": user.email
+                    },
+                    refresh = False,
+                )
+
+                # for the refresh toke here
+                refresh_token = create_jwt_token(
+                    user_data = {
+                        "first_name": user.first_name,
+                        "last_name": user.last_name,
+                        "email": user.email
+                    },
+                    exp = timedelta(days=7),
+                    refresh = True,
+                )
