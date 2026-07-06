@@ -5,6 +5,8 @@ from fastapi.exceptions import RequestValidationError
 from contextlib import asynccontextmanager
 from app.api.authentication.authentication_routes import authentication_router
 from app.core.database import init_database, close_database_connect
+from app.api.books.books_routes import books_routes
+
 
 api_version = "v1"
 
@@ -58,4 +60,11 @@ app.include_router(
     router = authentication_router,
     tags = ["Authentication"],
     prefix = "/api/authentication"
+)
+
+# for the books routes here 
+app.include_router(
+    router = books_routes,
+    tags = ["Books"],
+    prefix = "/api/books"
 )
