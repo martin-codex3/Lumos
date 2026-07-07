@@ -1,4 +1,5 @@
 from fastapi import APIRouter, status, Depends, HTTPException
+from fastapi.responses import JSONResponse
 from app.services.authentication.user_account_service import UserAccountService
 from app.schemas.authentication.user_schema import UserCreateSchema
 from app.schemas.authentication.sign_in_schema import SignInSchema
@@ -7,12 +8,15 @@ from app.mappings.authentication.create_user_response import CreateUserResponse
 from pydantic import EmailStr
 from app.core.database import get_database_session
 from app.services.authentication.log_in_user_service import LoginUserService
-
+from app.dependencies.dependency import RefreshTokenBearer
+from app.utils.jwt_token import create_jwt_token
+from datetime import datetime, timedelta
 
 authentication_router = APIRouter()
 # we will get the services here 
 authentication_services = UserAccountService()
 login_user_service = LoginUserService()
+refresh_token_bearer = RefreshTokenBearer()
 
 @authentication_router.post("/create-account", status_code = status.HTTP_200_OK, response_model = CreateUserResponse)
 async def index(user_data: UserCreateSchema, session: AsyncSession = Depends(get_database_session)):
@@ -48,4 +52,17 @@ async def sign_in(user_data: SignInSchema, session: AsyncSession = Depends(get_d
 
     return user_login
 
-    
+
+
+# we will attempt to create the refresh tokens here 
+@authentication_router.get("/refresh", status_code = status.HTTP_200_OK)
+async def create_refresh_token(token_details: dict = Depends(refresh_token_bearer)):
+    token_expiry_timestamp = token_details["exp"]
+
+    if datetime.fromtimestamp(token_expiry_timestamp) > datetime.now():
+        new_access_token = create_jwt_token(user_data = token_details["user"])
+
+        return JSONResponse(
+            content = {"access_token": new_access_token}
+        )
+
